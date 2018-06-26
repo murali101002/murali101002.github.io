@@ -344,7 +344,7 @@ var ArticleComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".comment-box textarea {\r\n  resize: none;\r\n  width: 65%;\r\n  height: 100px;\r\n  outline: none;\r\n  border-radius: 20px;\r\n  padding: 10px;\r\n  overflow: hidden;\r\n}\r\n.comment-box {\r\n  margin-top: 5%;\r\n}\r\n.submit-button {\r\n  background-color: #90b4da;\r\n  color: #fff;\r\n  border-width: 1px;\r\n  border-color: black;\r\n  width: 10%;\r\n  font-size: 15px;\r\n  height: 30px;\r\n  border-radius: 6px;\r\n  cursor: pointer;\r\n  margin-left: 55%;\r\n}\r\nbutton:disabled,\r\nbutton[disabled]{\r\n  border: 1px solid #999999;\r\n  background-color: #cccccc;\r\n  color: #666666;\r\n  border-radius: 6px;\r\n  cursor: not-allowed;\r\n}\r\n.comment {\r\n  background-color: #fff;\r\n  width: 53%;\r\n  border-radius: 20px;\r\n  border: 1px solid black;\r\n  padding: 10px;\r\n  margin-top: 15px;\r\n}\r\n.comments {\r\n  margin-left: 16%;\r\n}\r\n.comment-name {\r\n  font-weight: bold;\r\n}"
+module.exports = ".comment-box textarea {\r\n  resize: none;\r\n  width: 65%;\r\n  height: 100px;\r\n  outline: none;\r\n  border-radius: 20px;\r\n  padding: 10px;\r\n  overflow: hidden;\r\n}\r\n.comment-box {\r\n  margin-top: 5%;\r\n}\r\n.submit-button {\r\n  background-color: #90b4da;\r\n  color: #fff;\r\n  border-width: 1px;\r\n  border-color: black;\r\n  width: 10%;\r\n  font-size: 15px;\r\n  height: 30px;\r\n  border-radius: 6px;\r\n  cursor: pointer;\r\n  margin-left: 1%;\r\n}\r\nbutton:disabled,\r\nbutton[disabled]{\r\n  border: 1px solid #999999;\r\n  background-color: #cccccc;\r\n  color: #666666;\r\n  border-radius: 6px;\r\n  cursor: not-allowed;\r\n}\r\n.comment {\r\n  background-color: #fff;\r\n  width: 53%;\r\n  border-radius: 20px;\r\n  border: 1px solid black;\r\n  padding: 10px;\r\n  margin-top: 15px;\r\n}\r\n.comments {\r\n  margin-left: 13%;\r\n}\r\n.comment-name {\r\n  font-weight: bold;\r\n}"
 
 /***/ }),
 
@@ -355,7 +355,7 @@ module.exports = ".comment-box textarea {\r\n  resize: none;\r\n  width: 65%;\r\
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div fxLayout=\"row\">\n  <div fxFlex></div>\n  <div fxFlex=\"75%\" class=\"comment-container\">\n    <div class=\"comment-box\">\n      <textarea [(ngModel)]='comment' [placeholder]='placeholderText'></textarea>\n    </div>\n    <div class=\"comment-submit\">\n      <button [disabled]='!comment' class=\"submit-button\" (click)='submitComment()'>Comment</button>\n    </div>\n  </div>\n  <div fxFlex></div>\n</div>\n<div class=\"comments\">\n  <div *ngFor='let comment of comments' class=\"comment\">\n    <div class=\"comment-name\">{{comment?.name + ':'}}</div>\n    <div class=\"comment-text\">{{comment?.text}}</div>\n  </div>\n</div>"
+module.exports = "<div fxLayout=\"row\">\n  <div fxFlex></div>\n  <div fxFlex=\"75%\" class=\"comment-container\">\n    <div class=\"comment-box\">\n      <textarea [(ngModel)]='comment' [placeholder]='placeholderText'></textarea>\n    </div>\n    <div class=\"comment-submit\">\n      <button [disabled]='!comment' class=\"submit-button\" (click)='submitComment()'>Post</button>\n    </div>\n  </div>\n  <div fxFlex></div>\n</div>\n<div class=\"comments\">\n  <div *ngFor='let comment of comments' class=\"comment\">\n    <div class=\"comment-name\">{{comment?.name + ':'}}</div>\n    <div class=\"comment-text\">{{comment?.text}}</div>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -392,11 +392,12 @@ var CommentsComponent = /** @class */ (function () {
         this.authService = authService;
         this.firebaseApp = firebaseApp;
         this.changeDetector = changeDetector;
-        this.placeholderText = '';
+        this.placeholderText = 'Enter your comment...';
     }
     CommentsComponent.prototype.submitComment = function () {
         var user = this.authService.getCurrentUser();
         this.ref.child('/comments').push({ name: user['email'], text: this.comment });
+        this.comment = '';
     };
     CommentsComponent.prototype.ngOnInit = function () {
         this.comments = [];
@@ -410,8 +411,8 @@ var CommentsComponent = /** @class */ (function () {
             snapshot.forEach(function (item) {
                 _this.comments.push(item.val());
             });
+            _this.comments = _this.comments.reverse();
             _this.changeDetector.detectChanges();
-            console.log(_this.comments);
         }, function (error) {
             console.log('Error: ' + error.code);
         });
